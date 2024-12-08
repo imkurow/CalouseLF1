@@ -100,6 +100,19 @@ public class UserController{
 	        return null;
 	 }
 	 
+	 public boolean isUsernameUnique(String username) {
+	        String query = "SELECT username FROM users WHERE username = ?";
+	        try {
+	            PreparedStatement ps = conn.prepareStatement(query);
+	            ps.setString(1, username);
+	            ResultSet rs = ps.executeQuery();
+	            return !rs.next(); // return true jika username belum ada
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	    }
+	 
 	 
 
 	
