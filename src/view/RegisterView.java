@@ -213,4 +213,13 @@ public class RegisterView {
             showAlert("Error", "Database error occurred!", Alert.AlertType.ERROR);
         }
     }
+    
+    private void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+}
 }
