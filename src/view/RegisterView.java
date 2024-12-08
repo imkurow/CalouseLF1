@@ -1,7 +1,10 @@
 package view;
 
 import controller.UserController;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -42,5 +45,19 @@ public class RegisterView {
         stage.setTitle("CaLouselF - Register");
         stage.setResizable(false);
         stage.show();
+    }
+    private VBox createHeaderBox() {
+        VBox headerBox = new VBox(10);
+        headerBox.setAlignment(Pos.CENTER);
+        headerBox.setPadding(new Insets(0, 0, 20, 0));
+
+        Label titleLabel = new Label("CaLouselF");
+        Label subtitleLabel = new Label("Register New Account");
+        
+        titleLabel.setStyle("-fx-font-size: 24px; -fx-font-weight: bold;");
+        subtitleLabel.setStyle("-fx-font-size: 16px;");
+
+        headerBox.getChildren().addAll(titleLabel, subtitleLabel);
+        return headerBox;
     }
 }
