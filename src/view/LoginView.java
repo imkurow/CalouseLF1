@@ -144,7 +144,7 @@ public class LoginView {
             registerStage.setResizable(false);
             
             // Show register view
-//            new RegisterView(registerStage);
+            new RegisterView(registerStage);
             
         } catch (Exception e) {
             e.printStackTrace();
