@@ -52,7 +52,7 @@ public class RegisterView {
         borderPane.setBottom(footerBox);
 
         scene = new Scene(borderPane, 400, 600);
-        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
+//        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
         
         stage.setScene(scene);
         stage.setTitle("CaLouselF - Register");
