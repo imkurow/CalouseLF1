@@ -221,5 +221,11 @@ public class RegisterView {
         alert.setContentText(content);
         alert.showAndWait();
     }
-}
+    
+    private void backToLogin() {
+        stage.close();
+        Stage loginStage = new Stage();
+        new LoginView(loginStage);
+    }
+   
 }
