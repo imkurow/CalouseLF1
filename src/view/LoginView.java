@@ -15,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import models.User;
 
 public class LoginView {
@@ -86,7 +87,6 @@ public class LoginView {
         borderPane.setBottom(footerBox);
 
         scene = new Scene(borderPane, 400, 500);
-        scene.getStylesheets().add(getClass().getResource("/styles/style.css").toExternalForm());
         
         stage.setScene(scene);
         stage.setTitle("CaLouselF - Login");
@@ -133,6 +133,23 @@ public class LoginView {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
+    }
+    
+    private void showRegisterView() {
+        try {
+            stage.close();
+            
+            Stage registerStage = new Stage();
+            registerStage.initStyle(StageStyle.DECORATED);
+            registerStage.setResizable(false);
+            
+            // Show register view
+//            new RegisterView(registerStage);
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Failed to load register page!", Alert.AlertType.ERROR);
+        }
     }
 
 }
