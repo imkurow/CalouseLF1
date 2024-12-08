@@ -47,6 +47,33 @@ public class UserController{
 	            return "US" + System.currentTimeMillis() % 1000;
 	        }
 	 }
+	 
+	 //REGISTER
+	 public boolean register(String username, String password, String phoneNumber, String address, String role) {
+		 //validate
+		 if (!validateUsername(username) || !validatePassword(password) || !validatePhoneNumber(phoneNumber) || address.isEmpty()) {
+			 return false;
+		 }
+		 
+		 String userId = generateUserId();
+		 String query = "INSERT INTO users VALUES (?, ?, ?, ?, ?, ?)";
+		 try {
+	            PreparedStatement ps = conn.prepareStatement(query);
+	            ps.setString(1, userId);
+	            ps.setString(2, username);
+	            ps.setString(3, password);
+	            ps.setString(4, phoneNumber);
+	            ps.setString(5, address);
+	            ps.setString(6, role);
+	            
+	            return ps.executeUpdate() == 1;
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	            return false;
+	        }
+	 }
+	 
+	 
 
 	
 	
