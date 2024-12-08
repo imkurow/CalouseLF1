@@ -4,6 +4,7 @@ import controller.UserController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -14,6 +15,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import models.User;
 
 public class LoginView {
 
@@ -90,4 +92,40 @@ public class LoginView {
         stage.setTitle("CaLouselF - Login");
         stage.show();
     }
+    private void handleLogin(String username, String password) {
+        if(username.isEmpty() || password.isEmpty()) {
+            showAlert("Error", "Username and password cannot be empty!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // Cek admin credentials
+        if(username.equals("admin") && password.equals("admin")) {
+            try {
+//                new AdminView(stage);
+                return;
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Error", "Failed to load admin page!", Alert.AlertType.ERROR);
+                return;
+            }
+        }
+
+        try {
+            User loggedInUser = userController.login(username, password);
+            
+            if(loggedInUser != null) {
+                if(loggedInUser.getRole().equals("seller")) {
+//                    new SellerView(stage, loggedInUser);
+                } else {
+//                    new BuyerView(stage, loggedInUser);
+                }
+            } else {
+                showAlert("Login Failed", "Invalid username or password!", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Database connection error!", Alert.AlertType.ERROR);
+        }
+    }
+
 }
