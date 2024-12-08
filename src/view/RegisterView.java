@@ -4,6 +4,7 @@ import controller.UserController;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -138,6 +139,7 @@ public class RegisterView {
 
         return gridPane;
     }
+    
     private HBox createFooterBox() {
         HBox footerBox = new HBox(5);
         footerBox.setAlignment(Pos.CENTER);
@@ -149,5 +151,66 @@ public class RegisterView {
 
         footerBox.getChildren().addAll(loginLabel, loginLink);
         return footerBox;
+    }
+    
+    private void handleRegister() {
+        String username = usernameField.getText().trim();
+        String password = passwordField.getText();
+        String phone = phoneField.getText().trim();
+        String address = addressArea.getText().trim();
+        String role = ((RadioButton)roleGroup.getSelectedToggle()).getText().toLowerCase();
+
+        if(username.length() < 3) {
+            showAlert("Invalid Username", "Username must be at least 3 characters long!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        if(!userController.isUsernameUnique(username)) {
+            showAlert("Username Taken", "This username is already taken!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        if(password.length() < 8) {
+            showAlert("Invalid Password", "Password must be at least 8 characters long!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        boolean hasSpecialChar = false;
+        String specialChars = "!@#$%^&*";
+        for(char c : password.toCharArray()) {
+            if(specialChars.indexOf(c) != -1) {
+                hasSpecialChar = true;
+                break;
+            }
+        }
+        if(!hasSpecialChar) {
+            showAlert("Invalid Password", "Password must include at least one special character (!, @, #, $, %, ^, &, *)!", 
+                     Alert.AlertType.ERROR);
+            return;
+        }
+
+        if(!phone.startsWith("+62") || phone.length() < 11) {
+            showAlert("Invalid Phone Number", "Phone number must start with +62 and be at least 10 digits long!", 
+                     Alert.AlertType.ERROR);
+            return;
+        }
+
+        if(address.isEmpty()) {
+            showAlert("Invalid Address", "Address cannot be empty!", Alert.AlertType.ERROR);
+            return;
+        }
+
+        // registrasi
+        try {
+            if(userController.register(username, password, phone, address, role)) {
+                showAlert("Success", "Registration successful! Please login.", Alert.AlertType.INFORMATION);
+                backToLogin();
+            } else {
+                showAlert("Registration Failed", "Failed to register. Please try again.", Alert.AlertType.ERROR);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert("Error", "Database error occurred!", Alert.AlertType.ERROR);
+        }
     }
 }
