@@ -5,6 +5,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.RadioButton;
@@ -136,5 +137,17 @@ public class RegisterView {
         gridPane.add(buttonBox, 0, 5, 2, 1);
 
         return gridPane;
+    }
+    private HBox createFooterBox() {
+        HBox footerBox = new HBox(5);
+        footerBox.setAlignment(Pos.CENTER);
+        footerBox.setPadding(new Insets(20, 0, 0, 0));
+
+        Label loginLabel = new Label("Already have an account?");
+        Hyperlink loginLink = new Hyperlink("Login");
+        loginLink.setOnAction(e -> backToLogin());
+
+        footerBox.getChildren().addAll(loginLabel, loginLink);
+        return footerBox;
     }
 }
