@@ -1,9 +1,8 @@
 module CalouseLF {
-	requires java.sql;
-	requires javafx.graphics;
-	requires javafx.controls;
-	opens main;
-//	opens models;
-//	opens controller;
-	opens view;
+	  	requires javafx.controls;
+	    requires javafx.graphics;
+	    requires java.sql;
+	    
+	    opens main to javafx.graphics;
+	    opens view to javafx.graphics;
 }

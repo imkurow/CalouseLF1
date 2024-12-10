@@ -86,6 +86,20 @@ public class UserController{
 	 
 	 //LOGIN	
 	 public User login(String username, String password) {
+
+		 // Cek untuk admin
+		if(username.equals("admin") && password.equals("admin")) {
+			return new User(
+				"ADMIN",  
+				"admin",  
+				"admin",  
+				"",       
+				"",       
+				"admin"   
+			);
+		}
+	
+
 		 String query = "SELECT * FROM users WHERE username = ? AND password = ?";
 	        try {
 	            PreparedStatement ps = conn.prepareStatement(query);
