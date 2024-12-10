@@ -5,11 +5,20 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import config.Database;
 import models.User;
 
 public class UserController{
 	private Connection conn;
 	
+	public UserController() {
+        // Asumsikan ada class Connect untuk mengelola koneksi database
+        try {
+            this.conn = Database.getInstance().getConnection();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+	}
 	//VALIDATION METHODS
 	 private boolean validateUsername(String username) {
 	        return username.length() >= 3;
