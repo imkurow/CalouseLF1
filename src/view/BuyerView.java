@@ -1,5 +1,7 @@
 package view;
 
+import java.util.Optional;
+
 import controller.ItemController;
 import controller.TransactionController;
 import javafx.beans.property.SimpleStringProperty;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -127,6 +130,30 @@ public class BuyerView {
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
         return tableBox;
+    }
+    
+    
+    private void handlePurchase(Item item) {
+        Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Purchase");
+        confirmDialog.setHeaderText("Purchase Confirmation");
+        confirmDialog.setContentText("Are you sure you want to purchase " + item.getName() + " for $" + item.getPrice() + "?");
+        
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                boolean success = transactionController.createTransaction(buyer.getUserId(), item.getItemId());
+                if (success) {
+                    showAlert("Success", "Item purchased successfully!", AlertType.INFORMATION);
+                    refreshTableData();
+                } else {
+                    showAlert("Error", "Failed to complete purchase!", AlertType.ERROR);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                showAlert("Error", "An error occurred during purchase!", AlertType.ERROR);
+            }
+        }
     }
     
     private void refreshTableData() {
