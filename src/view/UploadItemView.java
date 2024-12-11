@@ -12,7 +12,11 @@ public class UploadItemView {
 	private User seller; 
 	private Scene scene;
 	
-	
-	
+	public UploadItemView(Stage stage, User seller) {
+        this.stage = stage;
+        this.seller = seller;
+        this.itemController = new ItemController();
+//        initializeUploadView();
+    }
 	
 }
