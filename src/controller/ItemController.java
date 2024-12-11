@@ -98,4 +98,21 @@ public class ItemController {
 	    return items;
 	}
 	
+	public boolean canEditItem(String itemId) {
+	    String query = "SELECT item_status FROM items WHERE item_id = ?";
+	    try {
+	        PreparedStatement ps = conn.prepareStatement(query);
+	        ps.setString(1, itemId);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        if(rs.next()) {
+	            return rs.getString("item_status").equals("accepted");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+
+	
 }
