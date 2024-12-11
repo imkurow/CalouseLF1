@@ -75,4 +75,15 @@ public class SellerView {
         menuBox.getChildren().addAll(uploadItemBtn, viewItemsBtn, logoutBtn);
         return menuBox;
     }
+    
+    private void showUploadItemView() {
+        new UploadItemView(new Stage(), seller);
+    }
+    
+    private void handleLogout() {
+        stage.close();
+        new LoginView(new Stage());
+    }
+    
+    
 }
