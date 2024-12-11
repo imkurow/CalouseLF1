@@ -36,4 +36,12 @@ public class ItemController {
         }
     }
 	
+	public boolean validateItem(String name, String category, String size, double price) {
+		if(name.length() < 3 || name.isEmpty()) return false;
+        if(category.length() < 3 || category.isEmpty()) return false;
+        if(size.isEmpty()) return false;
+        if(price <= 0) return false;
+        return true;
+	}
+	
 }
