@@ -78,7 +78,7 @@ public class SellerView {
     }
     
     private void showUploadItemView() {
-        new UploadItemView(new Stage(), seller);
+       new UploadItemView(new Stage(), seller);
     }
     
     private void showViewItemsView() {
