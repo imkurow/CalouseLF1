@@ -133,6 +133,18 @@ public class ItemController {
             return false;
         }
     }
+    
+    public boolean deleteItem(String itemId) {
+        String query = "DELETE FROM items WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 	
 }
