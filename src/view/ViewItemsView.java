@@ -1,13 +1,17 @@
 package view;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import controller.ItemController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -113,6 +117,34 @@ public class ViewItemsView {
             return cell;
         });
         
+        
+        // add Delete button column
+        TableColumn<Item, String> deleteCol = new TableColumn<>("Delete");
+        deleteCol.setPrefWidth(100);
+        deleteCol.setCellValueFactory(data -> new SimpleStringProperty("Delete"));
+        deleteCol.setCellFactory(tc -> {
+            TableCell<Item, String> cell = new TableCell<Item, String>() {
+                private final Button btn = new Button("Delete");
+                
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        btn.setOnAction(event -> {
+                            Item currentItem = getTableView().getItems().get(getIndex());
+                            handleDeleteAction(currentItem);
+                        });
+                        setGraphic(btn);
+                    }
+                }
+            };
+            return cell;
+        });
+        
+        
+        
         // Set column widths
         idColumn.setPrefWidth(100);
         nameColumn.setPrefWidth(150);
@@ -123,7 +155,8 @@ public class ViewItemsView {
         
         // Add columns to table
         tableView.getColumns().addAll(idColumn, nameColumn, categoryColumn, 
-                                    sizeColumn, priceColumn, statusColumn, actionCol);
+                                    sizeColumn, priceColumn, statusColumn, 
+                                    actionCol, deleteCol);
         
         refreshTableData();
         
@@ -133,6 +166,56 @@ public class ViewItemsView {
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
         return tableBox;
+    }
+    
+    private void handleDeleteAction(Item item) {
+        // Konfirmasi delete
+        Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Delete");
+        confirmDialog.setHeaderText("Delete Item");
+        confirmDialog.setContentText("Are you sure you want to delete this item: " + item.getName() + "?");
+        
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            try {
+                if (itemController.canEditItem(item.getItemId())) {
+                    boolean success = itemController.deleteItem(item.getItemId());
+                    if (success) {
+                        // Show success message
+                        Alert alert = new Alert(AlertType.INFORMATION);
+                        alert.setTitle("Success");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Item deleted successfully!");
+                        alert.showAndWait();
+                        
+                        // Refresh table
+                        refreshTableData();
+                    } else {
+                        // Show error message
+                        Alert alert = new Alert(AlertType.ERROR);
+                        alert.setTitle("Error");
+                        alert.setHeaderText(null);
+                        alert.setContentText("Failed to delete item!");
+                        alert.showAndWait();
+                    }
+                } else {
+                    // Show warning if item cannot be deleted
+                    Alert alert = new Alert(AlertType.WARNING);
+                    alert.setTitle("Warning");
+                    alert.setHeaderText(null);
+                    alert.setContentText("This item cannot be deleted because it has not been accepted by admin!");
+                    alert.showAndWait();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Show error message
+                Alert alert = new Alert(AlertType.ERROR);
+                alert.setTitle("Error");
+                alert.setHeaderText(null);
+                alert.setContentText("An error occurred while deleting the item!");
+                alert.showAndWait();
+            }
+        }
     }
     
     private void refreshTableData() {
