@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import config.Database;
+import models.Item;
 
 public class ItemController {
 	private Connection conn;
@@ -66,6 +68,34 @@ public class ItemController {
 	        e.printStackTrace();
 	        return false;
 	    }
+	}
+	
+	public ArrayList<Item> getSellerItems(String sellerId) {
+	    ArrayList<Item> items = new ArrayList<>();
+	    String query = "SELECT * FROM items WHERE seller_id = ?";
+	    
+	    try {
+	        PreparedStatement ps = conn.prepareStatement(query);
+	        ps.setString(1, sellerId);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        while(rs.next()) {
+	            Item item = new Item(
+	                rs.getString("item_id"),
+	                rs.getString("seller_id"),
+	                rs.getString("item_name"),
+	                rs.getString("item_category"),
+	                rs.getString("item_size"),
+	                rs.getDouble("item_price"),
+	                rs.getString("item_status")
+	            );
+	            items.add(item);
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    
+	    return items;
 	}
 	
 }
