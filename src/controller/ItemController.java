@@ -106,13 +106,15 @@ public class ItemController {
 	        ResultSet rs = ps.executeQuery();
 	        
 	        if(rs.next()) {
-	            return rs.getString("item_status").equals("accepted");
+	            String status = rs.getString("item_status");
+	            return status.equals("accepted") || status.equals("approved");
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
 	    }
 	    return false;
 	}
+
 
     public boolean updateItem(String itemId, String name, String category, String size, double price) {
         if(!validateItem(name, category, size, price)) return false;
@@ -128,6 +130,21 @@ public class ItemController {
             ps.setString(5, itemId);
             
             return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean deleteItem(String itemId) {
+        if (!canEditItem(itemId)) return false;
+        
+        String query = "DELETE FROM items WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            int result = ps.executeUpdate();
+            return result == 1;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
