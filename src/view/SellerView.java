@@ -82,7 +82,7 @@ public class SellerView {
     }
     
     private void showViewItemsView() {
-        new ViewItemsView(new Stage(), seller)
+        new ViewItemsView(new Stage(), seller);
     }
     
     private void handleLogout() {
