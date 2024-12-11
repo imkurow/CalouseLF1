@@ -122,7 +122,7 @@ public class LoginView {
                 }
 //                
                 else {
-//                    new BuyerView(stage, loggedInUser);
+                    new BuyerView(stage, loggedInUser);
                 }
             } else {
                 showAlert("Login Failed", "Invalid username or password!", Alert.AlertType.ERROR);
