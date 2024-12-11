@@ -15,7 +15,7 @@ public class Main extends Application {
 		new LoginView(primaryStage);
 //		new LoginView(primaryStage);
 //		new LoginView(primaryStage);
-		
+			
 	}
 
 }
