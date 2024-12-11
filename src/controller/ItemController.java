@@ -52,6 +52,7 @@ public class ItemController {
 		
 		try {
             PreparedStatement ps = conn.prepareStatement(query);
+            
             ps.setString(1, itemId);
             ps.setString(2, sellerId);
             ps.setString(3, name);
