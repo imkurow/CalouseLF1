@@ -45,27 +45,27 @@ public class ItemController {
 	}
 	
 	public boolean uploadItem(String sellerId, String name, String category, String size, double price) {
-		if(!validateItem(name, category, size, price)) return false;
-		
-		String itemId = generateItemId();
-		String query = "INSERT INTO items (item_id, seller_id, name, category, size, price, status) VALUES (?, ?, ?, ?, ?, ?, ?)";
-		
-		try {
-            PreparedStatement ps = conn.prepareStatement(query);
-            
-            ps.setString(1, itemId);
-            ps.setString(2, sellerId);
-            ps.setString(3, name);
-            ps.setString(4, category);
-            ps.setString(5, size);
-            ps.setDouble(6, price);
-            ps.setString(7, "pending"); 
-            
-            return ps.executeUpdate() == 1;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+	    if(!validateItem(name, category, size, price)) return false;
+	    
+	    String itemId = generateItemId();
+	    String query = "INSERT INTO items (item_id, seller_id, item_name, item_category, item_size, item_price, item_status) VALUES (?, ?, ?, ?, ?, ?, ?)";
+	    
+	    try {
+	        PreparedStatement ps = conn.prepareStatement(query);
+	        
+	        ps.setString(1, itemId);
+	        ps.setString(2, sellerId);
+	        ps.setString(3, name);
+	        ps.setString(4, category);
+	        ps.setString(5, size);
+	        ps.setDouble(6, price);
+	        ps.setString(7, "pending"); 
+	        
+	        return ps.executeUpdate() == 1;
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return false;
+	    }
 	}
 	
 }

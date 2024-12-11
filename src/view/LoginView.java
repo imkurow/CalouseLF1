@@ -115,7 +115,7 @@ public class LoginView {
             
             if(loggedInUser != null) {
                 if(loggedInUser.getRole().equals("seller")) {
-//                    new SellerView(stage, loggedInUser);
+                    new SellerView(stage, loggedInUser);
                 } 
                 else if(loggedInUser.getRole().equals("admin")) {
                 	System.out.println("hai admin");
