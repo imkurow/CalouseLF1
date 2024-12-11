@@ -5,7 +5,10 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
@@ -147,5 +150,22 @@ public class AdminView {
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
         return tableBox;
+    }
+    
+    private void handleApprove(Item item) {
+        Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Approval");
+        confirmDialog.setHeaderText("Approve Item");
+        confirmDialog.setContentText("Are you sure you want to approve this item: " + item.getName() + "?");
+        
+        if (confirmDialog.showAndWait().get() == ButtonType.OK) {
+            boolean success = itemController.approveItem(item.getItemId());
+            if (success) {
+                showAlert("Success", "Item has been approved!", AlertType.INFORMATION);
+                refreshTableData();
+            } else {
+                showAlert("Error", "Failed to approve item!", AlertType.ERROR);
+            }
+        }
     }
 }
