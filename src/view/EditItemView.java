@@ -129,4 +129,52 @@ public class EditItemView {
         return grid;
     }
     
+    private void handleUpdate(String name, String category, String size, String priceStr) {
+        // Validasi input
+        if(name.isEmpty() || category.isEmpty() || size == null || priceStr.isEmpty()) {
+            showAlert("Error", "All fields must be filled!", Alert.AlertType.ERROR);
+            return;
+        }
+        
+        // Validasi nama dan kategori
+        if(name.length() < 3) {
+            showAlert("Error", "Item name must be at least 3 characters long!", Alert.AlertType.ERROR);
+            return;
+        }
+        
+        if(category.length() < 3) {
+            showAlert("Error", "Category must be at least 3 characters long!", Alert.AlertType.ERROR);
+            return;
+        }
+        
+        // Validasi harga
+        double price;
+        try {
+            price = Double.parseDouble(priceStr);
+            if(price <= 0) {
+                showAlert("Error", "Price must be greater than 0!", Alert.AlertType.ERROR);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            showAlert("Error", "Price must be a valid number!", Alert.AlertType.ERROR);
+            return;
+        }
+        
+        // Update item
+        if(itemController.updateItem(item.getItemId(), name, category, size, price)) {
+            showAlert("Success", "Item updated successfully!", Alert.AlertType.INFORMATION);
+            if(onUpdateCallback != null) onUpdateCallback.run();
+            stage.close();
+        } else {
+            showAlert("Error", "Failed to update item!", Alert.AlertType.ERROR);
+        }
+    }
+    
+    private void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
 }
