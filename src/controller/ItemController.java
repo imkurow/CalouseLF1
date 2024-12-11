@@ -98,4 +98,41 @@ public class ItemController {
 	    return items;
 	}
 	
+	public boolean canEditItem(String itemId) {
+	    String query = "SELECT item_status FROM items WHERE item_id = ?";
+	    try {
+	        PreparedStatement ps = conn.prepareStatement(query);
+	        ps.setString(1, itemId);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        if(rs.next()) {
+	            return rs.getString("item_status").equals("accepted");
+	        }
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	    }
+	    return false;
+	}
+
+    public boolean updateItem(String itemId, String name, String category, String size, double price) {
+        if(!validateItem(name, category, size, price)) return false;
+        
+        String query = "UPDATE items SET item_name = ?, item_category = ?, item_size = ?, item_price = ? WHERE item_id = ?";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, name);
+            ps.setString(2, category);
+            ps.setString(3, size);
+            ps.setDouble(4, price);
+            ps.setString(5, itemId);
+            
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+	
 }

@@ -16,17 +16,20 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Item;
 import models.User;
+import javafx.scene.control.TableCell;
 
 public class ViewItemsView {
-	private Stage stage;
+    private Stage stage;
     private Scene scene;
     private User seller;
     private ItemController itemController;
+    private TableView<Item> tableView;
     
     public ViewItemsView(Stage stage, User seller) {
         this.stage = stage;
         this.seller = seller;
         this.itemController = new ItemController();
+        this.tableView = new TableView<>();
         initializeView();
     }
     
@@ -64,9 +67,6 @@ public class ViewItemsView {
         VBox tableBox = new VBox(10);
         tableBox.setAlignment(Pos.CENTER);
         
-        // Create TableView
-        TableView<Item> tableView = new TableView<>();
-        
         // Define columns
         TableColumn<Item, String> idColumn = new TableColumn<>("Item ID");
         idColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getItemId()));
@@ -88,8 +88,30 @@ public class ViewItemsView {
         TableColumn<Item, String> statusColumn = new TableColumn<>("Status");
         statusColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getStatus()));
         
-        // Add columns to table
-        tableView.getColumns().addAll(idColumn, nameColumn, categoryColumn, sizeColumn, priceColumn, statusColumn);
+        // Add Edit button column
+        TableColumn<Item, String> actionCol = new TableColumn<>("Action");
+        actionCol.setPrefWidth(100);
+        actionCol.setCellValueFactory(data -> new SimpleStringProperty("Edit"));
+        actionCol.setCellFactory(tc -> {
+            TableCell<Item, String> cell = new TableCell<Item, String>() {
+                private final Button btn = new Button("Edit");
+                
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setGraphic(null);
+                    } else {
+                        btn.setOnAction(event -> {
+                            Item currentItem = getTableView().getItems().get(getIndex());
+                            handleEditAction(currentItem);
+                        });
+                        setGraphic(btn);
+                    }
+                }
+            };
+            return cell;
+        });
         
         // Set column widths
         idColumn.setPrefWidth(100);
@@ -99,18 +121,29 @@ public class ViewItemsView {
         priceColumn.setPrefWidth(100);
         statusColumn.setPrefWidth(100);
         
-        // Load data
-        ArrayList<Item> items = itemController.getSellerItems(seller.getUserId());
-        tableView.getItems().addAll(items);
+        // Add columns to table
+        tableView.getColumns().addAll(idColumn, nameColumn, categoryColumn, 
+                                    sizeColumn, priceColumn, statusColumn, actionCol);
+        
+        refreshTableData();
         
         // Add refresh button
         Button refreshBtn = new Button("Refresh");
-        refreshBtn.setOnAction(e -> {
-            tableView.getItems().clear();
-            tableView.getItems().addAll(itemController.getSellerItems(seller.getUserId()));
-        });
+        refreshBtn.setOnAction(e -> refreshTableData());
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
         return tableBox;
+    }
+    
+    private void refreshTableData() {
+        tableView.getItems().clear();
+        tableView.getItems().addAll(itemController.getSellerItems(seller.getUserId()));
+    }
+    
+    private void handleEditAction(Item item) {
+        Stage editStage = new Stage();
+        EditItemView editView = new EditItemView(editStage, item, () -> {
+            refreshTableData();
+        });
     }
 }
