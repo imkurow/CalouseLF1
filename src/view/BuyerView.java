@@ -6,6 +6,8 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -125,5 +127,18 @@ public class BuyerView {
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
         return tableBox;
+    }
+    
+    private void refreshTableData() {
+        tableView.getItems().clear();
+        tableView.getItems().addAll(itemController.getAvailableItems());
+    }
+    
+    private void showAlert(String title, String content, AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
