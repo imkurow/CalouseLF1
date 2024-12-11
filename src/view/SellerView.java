@@ -70,6 +70,7 @@ public class SellerView {
         
         // Button actions
         uploadItemBtn.setOnAction(e -> showUploadItemView());
+        viewItemsBtn.setOnAction(e -> showViewItemsView());
         logoutBtn.setOnAction(e -> handleLogout());
         
         menuBox.getChildren().addAll(uploadItemBtn, viewItemsBtn, logoutBtn);
@@ -78,6 +79,10 @@ public class SellerView {
     
     private void showUploadItemView() {
         new UploadItemView(new Stage(), seller);
+    }
+    
+    private void showViewItemsView() {
+        new ViewItemsView(new Stage(), seller)
     }
     
     private void handleLogout() {
