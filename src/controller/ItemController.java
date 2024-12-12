@@ -363,6 +363,23 @@ public class ItemController {
         return null;
     }
     
+    public boolean declineOfferWithReason(String offerId, String reason) {
+        if(reason == null || reason.trim().isEmpty()) {
+            return false;
+        }
+        
+        String query = "UPDATE offers SET offer_status = 'declined', decline_reason = ? WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, reason);
+            ps.setString(2, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     
     
 
