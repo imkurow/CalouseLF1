@@ -186,5 +186,23 @@ public class AdminView {
         }
     }
     
+    private void refreshTableData() {
+        tableView.getItems().clear();
+        tableView.getItems().addAll(itemController.getPendingItems());
+    }
+    
+    private void handleLogout() {
+        stage.close();
+        new LoginView(new Stage());
+    }
+    
+    private void showAlert(String title, String content, AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
+    }
+    
     
 }
