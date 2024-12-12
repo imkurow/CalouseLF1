@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import controller.ItemController;
 import controller.TransactionController;
+import controller.WishlistController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,6 +34,7 @@ public class BuyerView {
     private User buyer;
     private ItemController itemController;
     private TransactionController transactionController;
+    private WishlistController wishlistController;
     private TableView<Item> tableView;
     
     public BuyerView(Stage stage, User buyer) {
@@ -40,6 +42,7 @@ public class BuyerView {
         this.buyer = buyer;
         this.itemController = new ItemController();
         this.transactionController = new TransactionController();
+        this.wishlistController = new WishlistController();
         this.tableView = new TableView<>();
         initializeBuyerView();
     }
@@ -140,21 +143,55 @@ public class BuyerView {
             return cell;
         });
         
+        // Add wishlist button column
+        TableColumn<Item, Void> wishlistCol = new TableColumn<>("Wishlist");
+        wishlistCol.setPrefWidth(100);
+        wishlistCol.setCellFactory(col -> {
+            TableCell<Item, Void> cell = new TableCell<>() {
+                private final Button wishlistBtn = new Button("Add to Wishlist");
+                {
+                    wishlistBtn.setOnAction(e -> {
+                        Item item = getTableView().getItems().get(getIndex());
+                        handleAddToWishlist(item);
+                    });
+                }
+                
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : wishlistBtn);
+                }
+            };
+            return cell;
+        });
+        
         // Set column widths
         nameColumn.setPrefWidth(200);
         categoryColumn.setPrefWidth(150);
         sizeColumn.setPrefWidth(100);
         priceColumn.setPrefWidth(100);
+        wishlistCol.setPrefWidth(100);
         
-        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol, offerCol);
+        tableView.getColumns().addAll(
+            nameColumn, 
+            categoryColumn, 
+            sizeColumn, 
+            priceColumn, 
+            actionCol, 
+            offerCol, 
+            wishlistCol  
+        );
         
         refreshTableData();
         
-        // Add refresh button
+        // Add buttons
         Button refreshBtn = new Button("Refresh Items");
         refreshBtn.setOnAction(e -> refreshTableData());
         
-        tableBox.getChildren().addAll(tableView, refreshBtn);
+        Button viewWishlistBtn = new Button("View Wishlist");
+        viewWishlistBtn.setOnAction(e -> showWishlistView());
+        
+        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn);
         return tableBox;
     }
     
@@ -261,6 +298,18 @@ public class BuyerView {
         }
 
         return true;
+    }
+    
+    private void handleAddToWishlist(Item item) {
+        if(wishlistController.addToWishlist(buyer.getUserId(), item.getItemId())) {
+            showAlert("Success", "Item berhasil ditambahkan ke wishlist!", AlertType.INFORMATION);
+        } else {
+            showAlert("Error", "Gagal menambahkan item ke wishlist!", AlertType.ERROR);
+        }
+    }
+    
+    private void showWishlistView() {
+        new WishlistView(new Stage(), buyer);
     }
 
 }
