@@ -77,8 +77,13 @@ public class PurchaseHistoryView {
         
         TableColumn<Transaction, String> priceCol = new TableColumn<>("Price");
         priceCol.setCellValueFactory(data -> {
-            Item item = itemController.getItemById(data.getValue().getItemId());
-            return new SimpleStringProperty(item != null ? String.format("$%.2f", item.getPrice()) : "Unknown");
+            String transactionId = data.getValue().getTransactionId();
+            String itemId = data.getValue().getItemId();
+            String userId = data.getValue().getUserId();
+            
+            // Cek apakah transaksi ini berasal dari penawaran yang diterima
+            double finalPrice = transactionController.getTransactionFinalPrice(transactionId, itemId, userId);
+            return new SimpleStringProperty(String.format("$%.2f", finalPrice));
         });
         
         tableView.getColumns().addAll(transactionIdCol, itemNameCol, categoryCol, sizeCol, priceCol);
