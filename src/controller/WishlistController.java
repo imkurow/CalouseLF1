@@ -39,4 +39,36 @@ public class WishlistController {
         }
     }
     
+    public boolean addToWishlist(String userId, String itemId) {
+        if(isItemInWishlist(userId, itemId)) return false;
+        
+        String wishlistId = generateWishlistId();
+        String query = "INSERT INTO wishlists (wishlist_id, user_id, item_id) VALUES (?, ?, ?)";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, wishlistId);
+            ps.setString(2, userId);
+            ps.setString(3, itemId);
+            
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean isItemInWishlist(String userId, String itemId) {
+        String query = "SELECT * FROM wishlists WHERE user_id = ? AND item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, userId);
+            ps.setString(2, itemId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
