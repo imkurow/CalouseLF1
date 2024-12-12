@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import config.Database;
 import models.Item;
+import models.Offer;
 
 public class ItemController {
 	private Connection conn;
@@ -231,6 +232,155 @@ public class ItemController {
             return false;
         }
     }
+    
+    private String generateOfferId() {
+        String query = "SELECT offer_id FROM offers ORDER BY offer_id DESC LIMIT 1";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                String lastId = rs.getString("offer_id");
+                int number = Integer.parseInt(lastId.substring(2)) + 1;
+                return String.format("OF%03d", number);
+            }
+            return "OF001";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "OF" + System.currentTimeMillis() % 1000;
+        }
+    }
+    
+    public boolean makeOffer(String userId, String itemId, double offerPrice) {
+        if(offerPrice <= 0) return false;
+        if(offerPrice <= getHighestOffer(itemId)) return false;
+        
+        String offerId = generateOfferId();
+        String query = "INSERT INTO offers (offer_id, user_id, item_id, offer_price, offer_status) VALUES (?, ?, ?, ?, ?)";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            ps.setString(2, userId);
+            ps.setString(3, itemId);
+            ps.setDouble(4, offerPrice);
+            ps.setString(5, "pending");
+            
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public double getHighestOffer(String itemId) {
+        String query = "SELECT MAX(offer_price) as highest_offer FROM offers WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                return rs.getDouble("highest_offer");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+    
+    public ArrayList<Offer> getItemOffers(String itemId) {
+        ArrayList<Offer> offers = new ArrayList<>();
+        String query = "SELECT * FROM offers WHERE item_id = ? ORDER BY offer_price DESC";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Offer offer = new Offer(
+                    rs.getString("offer_id"),
+                    rs.getString("user_id"),
+                    rs.getString("item_id"),
+                    rs.getDouble("offer_price"),
+                    rs.getString("offer_status")
+                );
+                offers.add(offer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return offers;
+    }
+    
+    public boolean acceptOffer(String offerId) {
+        String query = "UPDATE offers SET offer_status = 'accepted' WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean declineOffer(String offerId) {
+        String query = "UPDATE offers SET offer_status = 'declined' WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    
+    public Item getItemById(String itemId) {
+        String query = "SELECT * FROM items WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                return new Item(
+                    rs.getString("item_id"),
+                    rs.getString("seller_id"),
+                    rs.getString("item_name"),
+                    rs.getString("item_category"),
+                    rs.getString("item_size"),
+                    rs.getDouble("item_price"),
+                    rs.getString("item_status")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
+    public boolean declineOfferWithReason(String offerId, String reason) {
+        if(reason == null || reason.trim().isEmpty()) {
+            return false;
+        }
+        
+        String query = "UPDATE offers SET offer_status = 'declined', decline_reason = ? WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, reason);
+            ps.setString(2, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    
     
 
 }
