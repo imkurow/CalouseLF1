@@ -101,7 +101,7 @@ public class LoginView {
         // Cek admin credentials
         if(username.equals("admin") && password.equals("admin")) {
             try {
-//                new AdminView(stage);
+                new AdminView(stage);
                 return;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -118,7 +118,7 @@ public class LoginView {
                     new SellerView(stage, loggedInUser);
                 } 
                 else if(loggedInUser.getRole().equals("admin")) {
-                	System.out.println("hai admin");
+                	new AdminView(stage);
                 }
 //                
                 else {
