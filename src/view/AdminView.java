@@ -168,4 +168,23 @@ public class AdminView {
             }
         }
     }
+    
+    private void handleDecline(Item item) {
+        Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Confirm Decline");
+        confirmDialog.setHeaderText("Decline Item");
+        confirmDialog.setContentText("Are you sure you want to decline this item: " + item.getName() + "?");
+        
+        if (confirmDialog.showAndWait().get() == ButtonType.OK) {
+            boolean success = itemController.declineItem(item.getItemId());
+            if (success) {
+                showAlert("Success", "Item has been declined!", AlertType.INFORMATION);
+                refreshTableData();
+            } else {
+                showAlert("Error", "Failed to decline item!", AlertType.ERROR);
+            }
+        }
+    }
+    
+    
 }
