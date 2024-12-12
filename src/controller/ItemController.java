@@ -107,7 +107,8 @@ public class ItemController {
 	        
 	        if(rs.next()) {
 	            String status = rs.getString("item_status");
-	            return status.equals("accepted") || status.equals("approved");
+	            return status.equals("accepted") || status.equals("approved") 
+	            		&& !status.equals("sold");
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
