@@ -245,5 +245,22 @@ public class BuyerView {
             }
         });
     }
+    
+    private boolean validateOffer(String itemId, double offerPrice) {
+        if (offerPrice <= 0) {
+            showAlert("Invalid Offer", "Offer price must be greater than zero!", AlertType.ERROR);
+            return false;
+        }
+
+        double highestOffer = itemController.getHighestOffer(itemId);
+        if (highestOffer >= offerPrice) {
+            showAlert("Invalid Offer", 
+                     String.format("Your offer must be higher than the current highest offer: $%.2f", highestOffer), 
+                     AlertType.ERROR);
+            return false;
+        }
+
+        return true;
+    }
 
 }
