@@ -207,5 +207,29 @@ public class ItemController {
         return items;
     }
     
+    public boolean approveItem(String itemId) {
+        String query = "UPDATE items SET item_status = 'accepted' WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean declineItem(String itemId) {
+        String query = "UPDATE items SET item_status = 'declined' WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 
 }
