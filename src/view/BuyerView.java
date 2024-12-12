@@ -142,7 +142,7 @@ public class BuyerView {
         sizeColumn.setPrefWidth(100);
         priceColumn.setPrefWidth(100);
         
-        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol);
+        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol, offerCol);
         
         refreshTableData();
         
@@ -189,5 +189,5 @@ public class BuyerView {
         alert.setHeaderText(null);
         alert.setContentText(content);
         alert.showAndWait();
-    }
+    }	
 }
