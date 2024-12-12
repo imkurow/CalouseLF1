@@ -4,8 +4,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import config.Database;
+import models.Transaction;
 
 
 public class TransactionController {
@@ -87,6 +89,29 @@ public class TransactionController {
                 e.printStackTrace();
             }
         }
+    }
+    
+    public ArrayList<Transaction> getPurchaseHistory(String userId) {
+        ArrayList<Transaction> transactions = new ArrayList<>();
+        String query = "SELECT * FROM transactions WHERE user_id = ?";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Transaction transaction = new Transaction(
+                    rs.getString("transaction_id"),
+                    rs.getString("user_id"),
+                    rs.getString("item_id")
+                );
+                transactions.add(transaction);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return transactions;
     }
     
     
