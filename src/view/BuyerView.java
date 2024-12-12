@@ -11,12 +11,16 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import models.Item;
@@ -190,4 +194,56 @@ public class BuyerView {
         alert.setContentText(content);
         alert.showAndWait();
     }	
+    
+    private void showMakeOfferDialog(Item item) {
+        Dialog<Double> dialog = new Dialog<>();
+        dialog.setTitle("Make an Offer");
+        dialog.setHeaderText("Make an offer for " + item.getName());
+
+        ButtonType confirmButtonType = new ButtonType("Submit Offer", ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
+
+        GridPane grid = new GridPane();
+        grid.setHgap(10);
+        grid.setVgap(10);
+        grid.setPadding(new Insets(20, 150, 10, 10));
+
+        TextField priceField = new TextField();
+        priceField.setPromptText("Enter your offer price");
+
+        double highestOffer = itemController.getHighestOffer(item.getItemId());
+        String currentHighestOffer = highestOffer > 0 ? 
+            String.format("Current Highest Offer: $%.2f", highestOffer) : 
+            "No current offers";
+
+        grid.add(new Label("Current Price: $" + item.getPrice()), 0, 0);
+        grid.add(new Label(currentHighestOffer), 0, 1);
+        grid.add(new Label("Your Offer:"), 0, 2);
+        grid.add(priceField, 1, 2);
+
+        dialog.getDialogPane().setContent(grid);
+
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButtonType) {
+                try {
+                    return Double.parseDouble(priceField.getText());
+                } catch (NumberFormatException e) {
+                    return null;
+                }
+            }
+            return null;
+        });
+
+        Optional<Double> result = dialog.showAndWait();
+        result.ifPresent(offerPrice -> {
+            if (validateOffer(item.getItemId(), offerPrice)) {
+                if (itemController.makeOffer(buyer.getUserId(), item.getItemId(), offerPrice)) {
+                    showAlert("Success", "Offer submitted successfully!", AlertType.INFORMATION);
+                } else {
+                    showAlert("Error", "Failed to submit offer!", AlertType.ERROR);
+                }
+            }
+        });
+    }
+
 }
