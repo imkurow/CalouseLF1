@@ -232,5 +232,24 @@ public class ItemController {
         }
     }
     
+    private String generateOfferId() {
+        String query = "SELECT offer_id FROM offers ORDER BY offer_id DESC LIMIT 1";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                String lastId = rs.getString("offer_id");
+                int number = Integer.parseInt(lastId.substring(2)) + 1;
+                return String.format("OF%03d", number);
+            }
+            return "OF001";
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "OF" + System.currentTimeMillis() % 1000;
+        }
+    }
+    
+    
 
 }
