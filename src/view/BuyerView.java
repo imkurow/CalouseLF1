@@ -99,8 +99,6 @@ public class BuyerView {
             String.format("%.2f", data.getValue().getPrice())
         ));
         
-        TableColumn<Item, Void> wishlistCol = new TableColumn<>("Wishlist");
-        
         // Add Purchase button column
         TableColumn<Item, Void> actionCol = new TableColumn<>("Action");
         actionCol.setPrefWidth(100);
@@ -145,7 +143,9 @@ public class BuyerView {
             return cell;
         });
         
-        // Add to wishlist button
+        // Add wishlist button column
+        TableColumn<Item, Void> wishlistCol = new TableColumn<>("Wishlist");
+        wishlistCol.setPrefWidth(100);
         wishlistCol.setCellFactory(col -> {
             TableCell<Item, Void> cell = new TableCell<>() {
                 private final Button wishlistBtn = new Button("Add to Wishlist");
@@ -165,11 +165,6 @@ public class BuyerView {
             return cell;
         });
         
-        // Tambahkan kolom wishlist ke tabel
-        tableView.getColumns().add(wishlistCol);
-        Button viewWishlistBtn = new Button("View Wishlist");
-        viewWishlistBtn.setOnAction(e -> showWishlistView());
-        
         // Set column widths
         nameColumn.setPrefWidth(200);
         categoryColumn.setPrefWidth(150);
@@ -177,16 +172,26 @@ public class BuyerView {
         priceColumn.setPrefWidth(100);
         wishlistCol.setPrefWidth(100);
         
-        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol, offerCol, wishlistCol);
+        tableView.getColumns().addAll(
+            nameColumn, 
+            categoryColumn, 
+            sizeColumn, 
+            priceColumn, 
+            actionCol, 
+            offerCol, 
+            wishlistCol  
+        );
         
         refreshTableData();
         
-        // Add refresh button
+        // Add buttons
         Button refreshBtn = new Button("Refresh Items");
         refreshBtn.setOnAction(e -> refreshTableData());
         
-        tableBox.getChildren().addAll(tableView, refreshBtn);
-        tableBox.getChildren().add(viewWishlistBtn);
+        Button viewWishlistBtn = new Button("View Wishlist");
+        viewWishlistBtn.setOnAction(e -> showWishlistView());
+        
+        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn);
         return tableBox;
     }
     
