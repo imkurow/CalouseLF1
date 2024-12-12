@@ -194,7 +194,10 @@ public class BuyerView {
         Button viewHistoryBtn = new Button("View Purchase History");
         viewHistoryBtn.setOnAction(e -> showPurchaseHistoryView());
         
-        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn, viewHistoryBtn);
+        Button logoutBtn = new Button("Logout");
+        logoutBtn.setOnAction(e -> handleLogout());
+        
+        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn, viewHistoryBtn, logoutBtn);
         return tableBox;
     }
     
@@ -317,6 +320,22 @@ public class BuyerView {
     
     private void showPurchaseHistoryView() {
         new PurchaseHistoryView(new Stage(), buyer);
+    }
+    
+    private void handleLogout() {
+        // Konfirmasi logout
+        Alert confirmDialog = new Alert(AlertType.CONFIRMATION);
+        confirmDialog.setTitle("Logout Confirmation");
+        confirmDialog.setHeaderText("Are you sure you want to logout?");
+        confirmDialog.setContentText("Click OK to logout or Cancel to stay.");
+        
+        Optional<ButtonType> result = confirmDialog.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            stage.close();
+            
+            Stage loginStage = new Stage();
+            new LoginView(loginStage);
+        }
     }
 
 }
