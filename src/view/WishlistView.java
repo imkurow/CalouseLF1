@@ -1,10 +1,14 @@
 package view;
 
 import controller.WishlistController;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
@@ -46,5 +50,51 @@ public class WishlistView {
         stage.setScene(scene);
         stage.setTitle("My Wishlist");
         stage.show();
+    }
+    
+    private VBox createTableView() {
+        VBox vbox = new VBox(10);
+        vbox.setPadding(new Insets(10));
+        
+        TableColumn<Item, String> nameCol = new TableColumn<>("Name");
+        nameCol.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getName()));
+        
+        TableColumn<Item, String> categoryCol = new TableColumn<>("Category");
+        categoryCol.setCellValueFactory(data -> 
+            new SimpleStringProperty(data.getValue().getCategory()));
+        
+        TableColumn<Item, String> priceCol = new TableColumn<>("Price");
+        priceCol.setCellValueFactory(data -> 
+            new SimpleStringProperty(String.format("$%.2f", data.getValue().getPrice())));
+        
+        TableColumn<Item, Void> removeCol = new TableColumn<>("Remove");
+        removeCol.setCellFactory(col -> {
+            TableCell<Item, Void> cell = new TableCell<>() {
+                private final Button removeBtn = new Button("Remove");
+                {
+                    removeBtn.setOnAction(e -> {
+                        Item item = getTableView().getItems().get(getIndex());
+                        handleRemoveFromWishlist(item);
+                    });
+                }
+                
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : removeBtn);
+                }
+            };
+            return cell;
+        });
+        
+        tableView.getColumns().addAll(nameCol, categoryCol, priceCol, removeCol);
+        refreshTableData();
+        
+        Button refreshBtn = new Button("Refresh");
+        refreshBtn.setOnAction(e -> refreshTableData());
+        
+        vbox.getChildren().addAll(tableView, refreshBtn);
+        return vbox;
     }
 }
