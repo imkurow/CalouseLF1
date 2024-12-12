@@ -314,6 +314,30 @@ public class ItemController {
         return offers;
     }
     
+    public boolean acceptOffer(String offerId) {
+        String query = "UPDATE offers SET offer_status = 'accepted' WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean declineOffer(String offerId) {
+        String query = "UPDATE offers SET offer_status = 'declined' WHERE offer_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
     
 
 }
