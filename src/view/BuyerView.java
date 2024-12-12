@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import controller.ItemController;
 import controller.TransactionController;
+import controller.WishlistController;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -33,6 +34,7 @@ public class BuyerView {
     private User buyer;
     private ItemController itemController;
     private TransactionController transactionController;
+    private WishlistController wishlistController;
     private TableView<Item> tableView;
     
     public BuyerView(Stage stage, User buyer) {
@@ -40,6 +42,7 @@ public class BuyerView {
         this.buyer = buyer;
         this.itemController = new ItemController();
         this.transactionController = new TransactionController();
+        this.wishlistController = new WishlistController();
         this.tableView = new TableView<>();
         initializeBuyerView();
     }
@@ -164,6 +167,8 @@ public class BuyerView {
         
         // Tambahkan kolom wishlist ke tabel
         tableView.getColumns().add(wishlistCol);
+        Button viewWishlistBtn = new Button("View Wishlist");
+        viewWishlistBtn.setOnAction(e -> showWishlistView());
         
         // Set column widths
         nameColumn.setPrefWidth(200);
@@ -181,6 +186,7 @@ public class BuyerView {
         refreshBtn.setOnAction(e -> refreshTableData());
         
         tableBox.getChildren().addAll(tableView, refreshBtn);
+        tableBox.getChildren().add(viewWishlistBtn);
         return tableBox;
     }
     
@@ -287,6 +293,18 @@ public class BuyerView {
         }
 
         return true;
+    }
+    
+    private void handleAddToWishlist(Item item) {
+        if(wishlistController.addToWishlist(buyer.getUserId(), item.getItemId())) {
+            showAlert("Success", "Item berhasil ditambahkan ke wishlist!", AlertType.INFORMATION);
+        } else {
+            showAlert("Error", "Gagal menambahkan item ke wishlist!", AlertType.ERROR);
+        }
+    }
+    
+    private void showWishlistView() {
+        new WishlistView(new Stage(), buyer);
     }
 
 }
