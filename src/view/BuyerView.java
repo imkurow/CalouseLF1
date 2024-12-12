@@ -96,6 +96,8 @@ public class BuyerView {
             String.format("%.2f", data.getValue().getPrice())
         ));
         
+        TableColumn<Item, Void> wishlistCol = new TableColumn<>("Wishlist");
+        
         // Add Purchase button column
         TableColumn<Item, Void> actionCol = new TableColumn<>("Action");
         actionCol.setPrefWidth(100);
@@ -140,13 +142,37 @@ public class BuyerView {
             return cell;
         });
         
+        // Add to wishlist button
+        wishlistCol.setCellFactory(col -> {
+            TableCell<Item, Void> cell = new TableCell<>() {
+                private final Button wishlistBtn = new Button("Add to Wishlist");
+                {
+                    wishlistBtn.setOnAction(e -> {
+                        Item item = getTableView().getItems().get(getIndex());
+                        handleAddToWishlist(item);
+                    });
+                }
+                
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : wishlistBtn);
+                }
+            };
+            return cell;
+        });
+        
+        // Tambahkan kolom wishlist ke tabel
+        tableView.getColumns().add(wishlistCol);
+        
         // Set column widths
         nameColumn.setPrefWidth(200);
         categoryColumn.setPrefWidth(150);
         sizeColumn.setPrefWidth(100);
         priceColumn.setPrefWidth(100);
+        wishlistCol.setPrefWidth(100);
         
-        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol, offerCol);
+        tableView.getColumns().addAll(nameColumn, categoryColumn, sizeColumn, priceColumn, actionCol, offerCol, wishlistCol);
         
         refreshTableData();
         
