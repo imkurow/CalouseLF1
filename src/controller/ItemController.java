@@ -337,6 +337,32 @@ public class ItemController {
             return false;
         }
     }
+
+    
+    public Item getItemById(String itemId) {
+        String query = "SELECT * FROM items WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                return new Item(
+                    rs.getString("item_id"),
+                    rs.getString("seller_id"),
+                    rs.getString("item_name"),
+                    rs.getString("item_category"),
+                    rs.getString("item_size"),
+                    rs.getDouble("item_price"),
+                    rs.getString("item_status")
+                );
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+    
     
     
 
