@@ -4,8 +4,10 @@ import controller.ItemController;
 import controller.TransactionController;
 import javafx.geometry.Insets;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -80,6 +82,36 @@ public class ViewOfferView {
         pane.add(declineBtn, 1, 3);
         
         return pane;
+    }
+    
+    private void handleAcceptOffer(Offer offer, Item item) {
+        if(itemController.acceptOffer(offer.getOfferId())) {
+            transactionController.createTransaction(offer.getUserId(), item.getItemId());
+            refreshView();
+        }
+    }
+    
+    private void handleDeclineOffer(Offer offer) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Decline Offer");
+        dialog.setHeaderText("Please provide a reason for declining:");
+        dialog.setContentText("Reason:");
+        
+        dialog.showAndWait().ifPresent(reason -> {
+            if(!reason.trim().isEmpty()) {
+                if(itemController.declineOfferWithReason(offer.getOfferId(), reason)) {
+                    refreshView();
+                }
+            } else {
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setContentText("Reason cannot be empty!");
+                alert.show();
+            }
+        });
+    }
+    
+    private void refreshView() {
+        initialize();
     }
 	
 
