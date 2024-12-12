@@ -56,8 +56,14 @@ public class TransactionController {
             
             if(result == 1) {
 //                wishlistController.removeFromAllWishlists(itemId);
+
+                // daripada dihapus, maka diubah statusnya menjadi sold
+                // itemController.deleteItem(itemId);
                 
-                itemController.deleteItem(itemId);
+                String updateQuery = "UPDATE items SET item_status = 'sold' WHERE item_id = ?";
+                PreparedStatement updatePs = conn.prepareStatement(updateQuery);
+                updatePs.setString(1, itemId);
+                updatePs.executeUpdate();
                 
                 conn.commit();
                 return true;

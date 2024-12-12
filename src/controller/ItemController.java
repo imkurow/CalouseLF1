@@ -107,7 +107,8 @@ public class ItemController {
 	        
 	        if(rs.next()) {
 	            String status = rs.getString("item_status");
-	            return status.equals("accepted") || status.equals("approved");
+	            return status.equals("accepted") || status.equals("approved") 
+	            		&& !status.equals("sold");
 	        }
 	    } catch (SQLException e) {
 	        e.printStackTrace();
@@ -178,5 +179,58 @@ public class ItemController {
         
         return items;
     }
+    
+    
+    public ArrayList<Item> getPendingItems() {
+        ArrayList<Item> items = new ArrayList<>();
+        String query = "SELECT * FROM items WHERE item_status = 'pending'";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Item item = new Item(
+                    rs.getString("item_id"),
+                    rs.getString("seller_id"),
+                    rs.getString("item_name"),
+                    rs.getString("item_category"),
+                    rs.getString("item_size"),
+                    rs.getDouble("item_price"),
+                    rs.getString("item_status")
+                );
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return items;
+    }
+    
+    public boolean approveItem(String itemId) {
+        String query = "UPDATE items SET item_status = 'accepted' WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean declineItem(String itemId) {
+        String query = "UPDATE items SET item_status = 'declined' WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
 
 }
