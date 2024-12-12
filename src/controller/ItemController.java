@@ -250,6 +250,44 @@ public class ItemController {
         }
     }
     
+    public boolean makeOffer(String userId, String itemId, double offerPrice) {
+        if(offerPrice <= 0) return false;
+        if(offerPrice <= getHighestOffer(itemId)) return false;
+        
+        String offerId = generateOfferId();
+        String query = "INSERT INTO offers (offer_id, user_id, item_id, offer_price, offer_status) VALUES (?, ?, ?, ?, ?)";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, offerId);
+            ps.setString(2, userId);
+            ps.setString(3, itemId);
+            ps.setDouble(4, offerPrice);
+            ps.setString(5, "pending");
+            
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public double getHighestOffer(String itemId) {
+        String query = "SELECT MAX(offer_price) as highest_offer FROM offers WHERE item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            if(rs.next()) {
+                return rs.getDouble("highest_offer");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0.0;
+    }
+    
     
 
 }
