@@ -61,19 +61,23 @@ public class SellerView {
         
         Button uploadItemBtn = new Button("Upload New Item");
         Button viewItemsBtn = new Button("View My Items");
+        Button viewOffersBtn = new Button("View Offers");
         Button logoutBtn = new Button("Logout");
+        
         
         // Set button sizes
         uploadItemBtn.setPrefWidth(200);
         viewItemsBtn.setPrefWidth(200);
+        viewOffersBtn.setPrefWidth(200);
         logoutBtn.setPrefWidth(200);
         
         // Button actions
         uploadItemBtn.setOnAction(e -> showUploadItemView());
         viewItemsBtn.setOnAction(e -> showViewItemsView());
+        viewOffersBtn.setOnAction(e -> showViewOffersView());
         logoutBtn.setOnAction(e -> handleLogout());
         
-        menuBox.getChildren().addAll(uploadItemBtn, viewItemsBtn, logoutBtn);
+        menuBox.getChildren().addAll(uploadItemBtn, viewItemsBtn, viewOffersBtn, logoutBtn);
         return menuBox;
     }
     
@@ -83,6 +87,10 @@ public class SellerView {
     
     private void showViewItemsView() {
         new ViewItemsView(new Stage(), seller);
+    }
+    
+    private void showViewOffersView() {
+        new ViewOfferView(new Stage(), seller);
     }
     
     private void handleLogout() {
