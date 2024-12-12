@@ -114,6 +114,28 @@ public class BuyerView {
             return cell;
         });
         
+        // Add make offer column
+        TableColumn<Item, Void> offerCol = new TableColumn<>("Make Offer");
+        offerCol.setPrefWidth(100);
+        offerCol.setCellFactory(col -> {
+            TableCell<Item, Void> cell = new TableCell<>() {
+                private final Button offerBtn = new Button("Make Offer");
+                {
+                    offerBtn.setOnAction(e -> {
+                        Item item = getTableView().getItems().get(getIndex());
+                        showMakeOfferDialog(item);
+                    });
+                }
+                
+                @Override
+                protected void updateItem(Void item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setGraphic(empty ? null : offerBtn);
+                }
+            };
+            return cell;
+        });
+        
         // Set column widths
         nameColumn.setPrefWidth(200);
         categoryColumn.setPrefWidth(150);
