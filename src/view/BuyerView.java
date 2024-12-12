@@ -191,7 +191,10 @@ public class BuyerView {
         Button viewWishlistBtn = new Button("View Wishlist");
         viewWishlistBtn.setOnAction(e -> showWishlistView());
         
-        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn);
+        Button viewHistoryBtn = new Button("View Purchase History");
+        viewHistoryBtn.setOnAction(e -> showPurchaseHistoryView());
+        
+        tableBox.getChildren().addAll(tableView, refreshBtn, viewWishlistBtn, viewHistoryBtn);
         return tableBox;
     }
     
@@ -310,6 +313,10 @@ public class BuyerView {
     
     private void showWishlistView() {
         new WishlistView(new Stage(), buyer);
+    }
+    
+    private void showPurchaseHistoryView() {
+        new PurchaseHistoryView(new Stage(), buyer);
     }
 
 }
