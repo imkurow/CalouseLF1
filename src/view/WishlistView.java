@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableCell;
@@ -96,5 +97,27 @@ public class WishlistView {
         
         vbox.getChildren().addAll(tableView, refreshBtn);
         return vbox;
+    }
+    
+    private void handleRemoveFromWishlist(Item item) {
+        if(wishlistController.removeFromWishlist(buyer.getUserId(), item.getItemId())) {
+            refreshTableData();
+            showAlert("Success", "Item removed from wishlist!", Alert.AlertType.INFORMATION);
+        } else {
+            showAlert("Error", "Failed to remove item!", Alert.AlertType.ERROR);
+        }
+    }
+    
+    private void refreshTableData() {
+        tableView.getItems().clear();
+        tableView.getItems().addAll(wishlistController.getWishlistItems(buyer.getUserId()));
+    }
+    
+    private void showAlert(String title, String content, Alert.AlertType type) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(content);
+        alert.showAndWait();
     }
 }
