@@ -87,5 +87,10 @@ public class PurchaseHistoryView {
         vbox.getChildren().add(tableView);
         return vbox;
     }
+    
+    private void refreshTableData() {
+        tableView.getItems().clear();
+        tableView.getItems().addAll(transactionController.getPurchaseHistory(buyer.getUserId()));
+    }
 
 }
