@@ -100,4 +100,17 @@ public class WishlistController {
         }
         return items;
     }
+    
+    public boolean removeFromWishlist(String userId, String itemId) {
+        String query = "DELETE FROM wishlists WHERE user_id = ? AND item_id = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, userId);
+            ps.setString(2, itemId);
+            return ps.executeUpdate() == 1;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
