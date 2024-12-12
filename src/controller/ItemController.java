@@ -178,5 +178,34 @@ public class ItemController {
         
         return items;
     }
+    
+    
+    public ArrayList<Item> getPendingItems() {
+        ArrayList<Item> items = new ArrayList<>();
+        String query = "SELECT * FROM items WHERE item_status = 'pending'";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Item item = new Item(
+                    rs.getString("item_id"),
+                    rs.getString("seller_id"),
+                    rs.getString("item_name"),
+                    rs.getString("item_category"),
+                    rs.getString("item_size"),
+                    rs.getDouble("item_price"),
+                    rs.getString("item_status")
+                );
+                items.add(item);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return items;
+    }
+    
 
 }
