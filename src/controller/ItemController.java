@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import config.Database;
 import models.Item;
+import models.Offer;
 
 public class ItemController {
 	private Connection conn;
@@ -286,6 +287,31 @@ public class ItemController {
             e.printStackTrace();
         }
         return 0.0;
+    }
+    
+    public ArrayList<Offer> getItemOffers(String itemId) {
+        ArrayList<Offer> offers = new ArrayList<>();
+        String query = "SELECT * FROM offers WHERE item_id = ? ORDER BY offer_price DESC";
+        
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, itemId);
+            ResultSet rs = ps.executeQuery();
+            
+            while(rs.next()) {
+                Offer offer = new Offer(
+                    rs.getString("offer_id"),
+                    rs.getString("user_id"),
+                    rs.getString("item_id"),
+                    rs.getDouble("offer_price"),
+                    rs.getString("offer_status")
+                );
+                offers.add(offer);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return offers;
     }
     
     
